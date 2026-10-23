@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Past Simple Sentence Practice</title>
+<style>
+:root{--blue:#1769aa;--green:#187744;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:#f2f6fa;color:#182635;font:16px/1.55 Arial,sans-serif;user-select:none;-webkit-user-select:none}
+header{background:linear-gradient(120deg,#0e578e,#3188c7);color:white;text-align:center;padding:22px 14px}
+h1{font-size:clamp(21px,4vw,30px);margin:0 0 6px}header p{margin:0}
+main{max-width:950px;margin:20px auto;padding:0 12px}.panel{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 16px #173b5814;margin-bottom:16px}
+#gate{max-width:440px;margin:35px auto;text-align:center}input[type=password],textarea{width:100%;border:1px solid #b9c8d6;border-radius:9px;padding:12px;font:inherit;user-select:text;-webkit-user-select:text}
+button{border:0;border-radius:8px;padding:10px 14px;background:var(--blue);color:white;font:inherit;font-weight:700;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#607487}.hintbtn{background:#8654a6}.reset{background:#b54742}.check{background:#16804a}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar button{font-size:14px}
+#questionNav{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+#questionNav button{background:#e3edf7;color:#194b72;padding:7px 11px}#questionNav button.current{background:var(--blue);color:white}#questionNav button.checked{background:#d9f2e3;color:#17653a}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#617386;font-size:14px}
+.prompt{font-size:19px;font-weight:700;margin:14px 0 8px}.original{background:#f0f7ff;border-left:4px solid #3188c7;padding:12px;border-radius:8px;margin:12px 0}
+.target{color:#4b5d6f;font-size:14px}.hintbox,.feedback{padding:12px;border-radius:9px;margin-top:12px;white-space:pre-wrap}.hintbox{background:#fff7d9;border-left:4px solid #e4b52e}.good{background:#e9f7ee;border-left:4px solid var(--green)}.bad{background:#fff0ef;border-left:4px solid var(--red)}
+textarea{min-height:90px;resize:vertical}.score{font-weight:700;color:#104c7b}.note{font-size:13px;color:#607386}
+@media(max-width:600px){.panel{padding:13px}.prompt{font-size:17px}.toolbar button{flex:1}}
+</style></head>
+<body>
+<header><h1>Exercise 2 – Past Simple</h1><p>Write complete sentences using the past simple tense</p></header>
+<main>
+<section id="gate" class="panel"><h2>Enter password</h2><p>Nhập mật khẩu để bắt đầu làm bài.</p><input id="pw" type="password" placeholder="Password" autocomplete="off"><div style="margin-top:12px"><button onclick="unlock()">Start</button></div><p id="gateMsg" class="note"></p></section>
+<div id="app" style="display:none">
+<section class="panel"><div class="meta"><span><b>Instructions:</b> Viết câu hoàn chỉnh ở thì quá khứ đơn. Mỗi câu chỉ được chấm một lần, trừ khi dùng Reset.</span><span class="score" id="score">Score: 0 / 15</span></div><div id="questionNav"></div></section>
+<section class="panel" id="work"></section></div></main>
+<script>
+const qs=[
+{src:"She / come / home / very late / last night",display:"She came home very late last night.",answers:["she came home very late last night"],hint:"Past simple of “come” is “came”. Use the time phrase “last night”.",grammar:"Thì quá khứ đơn: S + V2/ed. “Come” là động từ bất quy tắc, dạng quá khứ là “came”.",vi:"Cô ấy đã về nhà rất muộn tối qua."},
+{src:"I / watch / very funny video / YouTube",display:"I watched a very funny video on YouTube.",answers:["i watched a very funny video on youtube"],hint:"Use watched (past simple) and the article “a” before “very funny video”.",grammar:"Thì quá khứ đơn với động từ có quy tắc: watch → watched. Dùng “a” trước cụm danh từ số ít “video” và “on YouTube”.",vi:"Tôi đã xem một video rất hài hước trên YouTube."},
+{src:"Where / be / they / this morning?",display:"Where were they this morning?",answers:["where were they this morning"],hint:"Past simple of “be” with “they” is “were”. Question: Where + were + subject?",grammar:"Câu hỏi với “be” ở quá khứ: Từ hỏi + was/were + chủ ngữ. Với “they”, dùng “were”.",vi:"Sáng nay họ đã ở đâu?"},
+{src:"Mike / get up / early / and / go to work",display:"Mike got up early and went to work.",answers:["mike got up early and went to work"],hint:"Past forms: get → got; go → went.",grammar:"Dùng thì quá khứ đơn cho các hành động đã xảy ra. “Get up” → “got up”; “go” → “went”.",vi:"Mike đã thức dậy sớm và đi làm."},
+{src:"We / visit / opera theater / last Thursday",display:"We visited the opera theater last Thursday.",answers:["we visited the opera theater last thursday"],hint:"Add -ed to “visit”; use “the” before “opera theater”.",grammar:"Động từ có quy tắc: visit → visited. Cụm danh từ xác định dùng “the opera theater”.",vi:"Chúng tôi đã đến thăm nhà hát opera vào thứ Năm tuần trước."},
+{src:"They / buy / a lot of food / for / camping trip",display:"They bought a lot of food for the camping trip.",answers:["they bought a lot of food for the camping trip"],hint:"Past simple of “buy” is “bought”.",grammar:"“Buy” là động từ bất quy tắc: buy → bought. “A lot of” nghĩa là nhiều; dùng “the camping trip” để nói chuyến cắm trại cụ thể.",vi:"Họ đã mua rất nhiều thức ăn cho chuyến đi cắm trại."},
+{src:"It / be / cloudy / yesterday",display:"It was cloudy yesterday.",answers:["it was cloudy yesterday"],hint:"Past simple of “be” with “it” is “was”.",grammar:"Với chủ ngữ “it”, động từ “be” ở quá khứ là “was”.",vi:"Hôm qua trời nhiều mây."},
+{src:"In 1990 / we / move / to another city",display:"In 1990, we moved to another city. / We moved to another city in 1990.",answers:["in 1990 we moved to another city","we moved to another city in 1990"],hint:"Use “moved” and put “In 1990” at the beginning or end.",grammar:"Động từ có quy tắc: move → moved. Cụm thời gian “In 1990” có thể đặt đầu hoặc cuối câu.",vi:"Năm 1990, chúng tôi chuyển đến một thành phố khác."},
+{src:"When / you / get / the first gift?",display:"When did you get the first gift?",answers:["when did you get the first gift"],hint:"Question in past simple: When + did + subject + base verb?",grammar:"Câu hỏi quá khứ đơn: Wh-word + did + S + V nguyên mẫu. Sau “did” dùng “get”, không dùng “got”.",vi:"Bạn nhận được món quà đầu tiên khi nào?"},
+{src:"She / not / go / to the church / five days ago",display:"She did not go to the church five days ago.",answers:["she did not go to the church five days ago","she didn't go to the church five days ago"],hint:"Negative past simple: S + did not/didn’t + base verb.",grammar:"Câu phủ định quá khứ đơn: S + did not/didn’t + V nguyên mẫu. Vì đã có “did”, dùng “go” chứ không dùng “went”.",vi:"Cô ấy đã không đến nhà thờ năm ngày trước."},
+{src:"How / be / he / yesterday?",display:"How was he yesterday?",answers:["how was he yesterday"],hint:"With “he”, use “was”: How + was + subject?",grammar:"Câu hỏi với “be” ở quá khứ: How + was/were + chủ ngữ. Với “he”, dùng “was”.",vi:"Hôm qua anh ấy thế nào?"},
+{src:"Mr. and Mrs. James / come back home / and / have lunch / late / last night",display:"Mr. and Mrs. James came back home and had lunch late last night.",answers:["mr and mrs james came back home and had lunch late last night","mr. and mrs. james came back home and had lunch late last night"],hint:"Past forms: come → came; have → had.",grammar:"Hai động từ bất quy tắc ở quá khứ: come → came, have → had. Hai hành động nối với nhau bằng “and”.",vi:"Ông bà James đã về nhà và ăn trưa muộn vào tối qua."},
+{src:"They / happy / last holiday?",display:"Were they happy last holiday?",answers:["were they happy last holiday"],hint:"Question with “be” in the past: Were + plural subject + adjective?",grammar:"Câu hỏi với “be” ở quá khứ: Was/Were + chủ ngữ + tính từ? “They” đi với “were”.",vi:"Kỳ nghỉ vừa rồi họ có vui không?"},
+{src:"How / you / get there?",display:"How did you get there?",answers:["how did you get there"],hint:"Past simple question: How + did + subject + base verb?",grammar:"Câu hỏi quá khứ đơn: How + did + S + V nguyên mẫu. Sau “did” dùng “get”.",vi:"Bạn đã đến đó bằng cách nào?"},
+{src:"I / play / football / last Sunday",display:"I played football last Sunday.",answers:["i played football last sunday"],hint:"Add -ed to “play” to form the past simple.",grammar:"Động từ có quy tắc: play → played. “Last Sunday” là dấu hiệu của quá khứ đơn.",vi:"Tôi đã chơi bóng đá vào Chủ nhật tuần trước."}
+];
+let current=0,answers=Array(qs.length).fill(''),checked=Array(qs.length).fill(false),hints=Array(qs.length).fill(false);
+function unlock(){if(document.getElementById('pw').value==='367'){document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';render()}else document.getElementById('gateMsg').textContent='Incorrect password. Try again.'}
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+function render(){
+document.getElementById('questionNav').innerHTML=qs.map((q,i)=>`<button onclick="go(${i})" class="${i===current?'current ':''}${checked[i]?'checked':''}">${i+1}</button>`).join('');
+const q=qs[current];
+document.getElementById('work').innerHTML=`<div class="meta"><span>Question ${current+1} of ${qs.length}</span><span>${checked[current]?'Submitted — locked':'One attempt only'}</span></div>
+<div class="original"><div class="target">Word prompts</div><div class="prompt">${q.src}</div></div>
+<label for="answer"><b>Your sentence</b></label><textarea id="answer" placeholder="Write a complete sentence..." ${checked[current]?'disabled':''}>${esc(answers[current])}</textarea>
+<div class="toolbar" style="margin-top:12px"><button class="hintbtn" onclick="hint()" ${hints[current]||checked[current]?'disabled':''}>HINT</button><button class="check" onclick="check()" ${checked[current]?'disabled':''}>Check answer</button><button class="reset" onclick="resetOne()">Reset this question</button></div>
+${hints[current]?`<div class="hintbox"><b>Hint:</b> ${q.hint}</div>`:''}${checked[current]?feedback(q):''}
+<div class="toolbar" style="margin-top:18px"><button class="secondary" onclick="prev()" ${current===0?'disabled':''}>Previous</button><button onclick="next()" ${current===qs.length-1?'disabled':''}>Next</button></div><p class="note">Chọn số câu phía trên để chuyển trực tiếp. Reset chỉ xóa câu hiện tại và điểm của câu đó.</p>`;
+document.getElementById('score').textContent=`Score: ${getScore()} / ${qs.length}`;
+document.querySelectorAll('#questionNav button').forEach((b,i)=>{b.classList.toggle('current',i===current);b.classList.toggle('checked',checked[i])});
+const ta=document.getElementById('answer');if(ta&&!checked[current])ta.addEventListener('input',e=>answers[current]=e.target.value);
+}
+function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function norm(x){return String(x).toLowerCase().replace(/[’‘]/g,"'").replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
+function feedback(q){let ok=q.answers.some(a=>norm(a)===norm(answers[current]));return `<div class="feedback ${ok?'good':'bad'}"><b>${ok?'✓ Correct!':'✗ Not quite. Compare with the model answer.'}</b><b>Đáp án mẫu:</b> ${esc(q.display)}<br><b>Giải thích cấu trúc:</b> ${esc(q.grammar)}<br><b>Nghĩa tiếng Việt:</b> ${esc(q.vi)}</div>`}
+function check(){if(checked[current])return;let v=document.getElementById('answer').value.trim();if(!v){alert('Please type your answer first.');return}answers[current]=v;checked[current]=true;render()}
+function hint(){hints[current]=true;render()}function go(i){current=i;render()}function next(){if(current<qs.length-1){current++;render()}}function prev(){if(current>0){current--;render()}}
+function resetOne(){answers[current]='';checked[current]=false;hints[current]=false;render()}
+function getScore(){return checked.reduce((sum,v,i)=>sum+(v&&qs[i].answers.some(a=>norm(a)===norm(answers[i]))?1:0),0)}
+document.addEventListener('copy',e=>e.preventDefault());document.addEventListener('cut',e=>e.preventDefault());document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&['c','x','a','s','u'].includes(e.key.toLowerCase()))e.preventDefault()});
+</script></body></html>
